@@ -8,6 +8,7 @@ Resources:
         Properties:
             Runtime: nodejs12.x
             Handler: index.handler
+            MemorySize: 128
             Events: 
                 StartVideoMaker:
                     Type: Api
