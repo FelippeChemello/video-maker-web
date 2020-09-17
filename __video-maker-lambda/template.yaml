@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion : '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Video Maker
+
+Resources:
+    VideoMaker: 
+        Type: AWS::Serverless::Function
+        Properties:
+            Runtime: nodejs12.x
+            Handler: index.handler
+            Events: 
+                StartVideoMaker:
+                    Type: Api
+                    Properties:
+                        Path: /
+                        Method: post
