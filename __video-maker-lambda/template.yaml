@@ -9,6 +9,7 @@ Resources:
             Runtime: nodejs12.x
             Handler: index.handler
             MemorySize: 128
+            Timeout: 300
             Events: 
                 StartVideoMaker:
                     Type: Api

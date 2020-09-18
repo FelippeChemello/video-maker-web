@@ -3,10 +3,17 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "deploy": "yarn zip && yarn s3UploadCode && yarn updateLambdaCode",
+    "zip": "zip --symlinks --recurse-paths __video-maker-lambda.zip index.js package.json node_modules/ exodus/",
+    "s3UploadCode": "aws s3 cp __video-maker-lambda.zip \"s3://video-maker-files.codestack.me\"",
+    "updateLambdaCode": "aws lambda update-function-code --function-name video-maker --s3-bucket \"video-maker-files.codestack.me\" --s3-key __video-maker-lambda.zip"
+  },
   "dependencies": {
     "aws-sdk": "^2.755.0",
     "request": "^2.88.2",
     "sharp": "^0.26.0",
-    "tempy": "^0.7.0"
+    "tempy": "^0.7.0",
+    "videoshow": "^0.1.12"
   }
 }
