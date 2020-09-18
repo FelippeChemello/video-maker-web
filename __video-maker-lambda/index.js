@@ -17,6 +17,9 @@ exports.handler = async (event, context, callback) => {
     const dstBucket = `${srcBucket}`;
     const dstKey = `resized-${srcKey}`;
 
+    console.log(`srcKey: ${srcKey}`);
+    console.log(`srcBucket: ${srcBucket}`);
+
     // Infer the image type from the file suffix.
     const typeMatch = srcKey.match(/\.([^.]*)$/);
     if (!typeMatch) {
@@ -32,24 +35,27 @@ exports.handler = async (event, context, callback) => {
     }
 
     // Download the image from the S3 source bucket.
-
+    let origimage;
     try {
         const params = {
             Bucket: srcBucket,
             Key: srcKey,
         };
-        var origimage = await s3.getObject(params).promise();
+        origimage = await s3.getObject(params).promise();
     } catch (error) {
         console.log(error);
         return;
     }
 
+    console.log(origimage);
+
     // set thumbnail width. Resize will set the height automatically to maintain aspect ratio.
     const width = 200;
 
     // Use the Sharp module to resize the image and save in a buffer.
+    let buffer;
     try {
-        var buffer = await sharp(origimage.Body).resize(width).toBuffer();
+        buffer = await sharp(origimage.Body).resize(width).toBuffer();
     } catch (error) {
         console.log(error);
         return;
