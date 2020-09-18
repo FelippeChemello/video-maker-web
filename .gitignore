@@ -36,5 +36,6 @@ yarn-error.log*
 .env
 
 __video-maker-lambda/images/*
-__video-maker-lambda/node_modules
+__video-maker-lambda/node_modules/*
+!__video-maker-lambda/node_modules/.bin
 
