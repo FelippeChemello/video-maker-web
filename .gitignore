@@ -37,5 +37,4 @@ yarn-error.log*
 
 __video-maker-lambda/images/*
 __video-maker-lambda/node_modules/*
-!__video-maker-lambda/node_modules/.bin
-
+__video-maker-lambda.zip

@@ -12,10 +12,9 @@ jobs:
         uses: Borales/actions-yarn@v2.3.0
         with: 
             cmd: --cwd __video-maker-lambda
-      - name: Sleep for 10 seconds
-        uses: jakejarvis/wait-action@master
+      - uses: montudor/action-zip@v0.1.0
         with:
-            time: '10s'
+          args: zip -qq -r __video-maker-lambda.zip __video-maker-lambda
       - name: Deploy __video-maker-lambda To AWS Lambda
         uses: appleboy/lambda-action@master
         with:
@@ -23,4 +22,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: video-maker
-          source: __video-maker-lambda/*
+          zip_file: __video-maker-lambda.zip
