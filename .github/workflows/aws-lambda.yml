@@ -12,9 +12,10 @@ jobs:
         uses: Borales/actions-yarn@v2.3.0
         with: 
             cmd: --cwd __video-maker-lambda
-      - uses: montudor/action-zip@v0.1.0
+      - name: Zipping __video-maker-lambda
+        uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -qq -r __video-maker-lambda.zip __video-maker-lambda
+          args: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
       - name: Deploy __video-maker-lambda To AWS Lambda
         uses: appleboy/lambda-action@master
         with:
