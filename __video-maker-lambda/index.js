@@ -1,4 +1,3 @@
-const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const AWS = require('aws-sdk');
@@ -23,7 +22,7 @@ function downloadImages(url, fileDestination) {
     });
 }
 
-const handler = (event, context, callback) => {
+exports.handler = (event, context, callback) => {
     // We're going to do the transcoding asynchronously, so we callback immediately.
     callback();
 
@@ -32,21 +31,19 @@ const handler = (event, context, callback) => {
         videoName,
         imagesUrl,
         s3Bucket,
-    } = event;
+    } = JSON.parse(event.body) || event;
     const filename = path.basename(videoName);
-    const logKey = `${videoName}.log`;
 
     // Create temporary input/output filenames that we can clean up afterwards.
     const imagesFiles = [];
-    const videoFileName = 'video.mp4';
-    //  tempy.file({
-    //     extension: 'mp4',
-    // });
+    const videoFileName = tempy.file({
+        extension: 'mp4',
+    });
 
     // Download the source file.
     const downloadPromisses = [];
-    imagesUrl.forEach((url, index) => {
-        const imageFileName = `image${index}.png`;// tempy.file();
+    imagesUrl.forEach((url) => {
+        const imageFileName = tempy.file({ extension: 'png' });
 
         imagesFiles.push(imageFileName);
 
@@ -55,13 +52,7 @@ const handler = (event, context, callback) => {
         downloadPromisses.push(downloadImages(url, imageFileName));
     });
 
-    console.log(downloadPromisses);
-
     Promise.all(downloadPromisses).then(() => {
-        console.log(downloadPromisses);
-        console.log('imagesFiles:');
-        console.log(imagesFiles);
-
         const videoOptions = {
             fps: 25,
             transition: true,
@@ -95,7 +86,7 @@ const handler = (event, context, callback) => {
 
         videoshow(imagesFiles, videoOptions)
             // .audio('./content/output[final].mp3')
-            .save('video.mp4')
+            .save(videoFileName)
             .on('start', (command) => {
                 console.log('> [video-robot] ffmpeg process started:', command);
             })
@@ -110,53 +101,29 @@ const handler = (event, context, callback) => {
             })
             .on('end', (output) => {
                 console.log('> [video-robot] Video created in:', output);
-            });
 
-        // Upload the generated MP$ to S3.
-        try {
-            console.log('Salvando video no S3');
+                // Upload the generated MP4 to S3.
+                try {
+                    console.log('Salvando video no S3');
 
-            // fs.createReadStream(videoFileName);
-            // s3.putObject({
-            //     Body: fs.createReadStream(videoFileName),
-            //     Bucket: s3Bucket,
-            //     Key: videoName,
-            //     ContentDisposition: `attachment; filename="${filename.replace('"', '\'')}"`,
-            //     ContentType: 'video/mp4',
-            // }, (error) => {
-            //     if (error) {
-            //         throw new Error(error);
-            //     } else {
-            //     // Update a log of the FFmpeg output.
-            //         const logFilename = path.basename(logKey);
-            //         console.log('Salvando log no S3');
-            //         s3.putObject({
-            //             Body: processLog,
-            //             Bucket: s3Bucket,
-            //             ContentType: 'text/plain',
-            //             ContentDisposition: `inline; filename="${logFilename.replace('"', '\'')}"`,
-            //             Key: logKey,
-            //         }, () => {
-            //             [...imagesFiles, videoFileName].forEach((fileNameEach) => {
-            //                 if (fs.existsSync(fileNameEach)) {
-            //                     fs.unlinkSync(fileNameEach);
-            //                 }
-            //             });
-            //         });
-            //     }
-            // });
-        } catch (exception) {
-            [...imagesFiles, videoFileName].forEach((fileNameEach) => {
-                if (fs.existsSync(fileNameEach)) {
-                    fs.unlinkSync(fileNameEach);
+                    s3.putObject({
+                        Body: fs.createReadStream(videoFileName),
+                        Bucket: s3Bucket,
+                        Key: videoName,
+                        ContentDisposition: `attachment; filename="${filename.replace('"', '\'')}"`,
+                        ContentType: 'video/mp4',
+                    }, (error) => {
+                        if (error) throw new Error(error);
+                    });
+                } catch (exception) {
+                    [...imagesFiles, videoFileName].forEach((fileNameEach) => {
+                        if (fs.existsSync(fileNameEach)) {
+                            fs.unlinkSync(fileNameEach);
+                        }
+                    });
+
+                    console.error(exception);
                 }
             });
-
-            console.error(exception);
-        }
     });
 };
-
-const aaa = require('./input-file-transcoder.json');
-
-handler(aaa);

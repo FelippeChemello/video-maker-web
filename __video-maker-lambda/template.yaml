@@ -8,7 +8,7 @@ Resources:
         Properties:
             Runtime: nodejs12.x
             Handler: index.handler
-            MemorySize: 128
+            MemorySize: 512
             Timeout: 300
             Events: 
                 StartVideoMaker:
