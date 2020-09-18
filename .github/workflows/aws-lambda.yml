@@ -11,7 +11,7 @@ jobs:
       - name: Yarn Install On __video-maker-lambda
         uses: Borales/actions-yarn@v2.3.0
         with: 
-            cmd: --cwd __video-maker-lambda install
+            cmd: --cwd __video-maker-lambda
       - name: Deploy __video-maker-lambda To AWS Lambda
         uses: appleboy/lambda-action@master
         with:
