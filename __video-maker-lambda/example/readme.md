@@ -53,3 +53,5 @@ Os dois primeiros referem-se ao nome do bucket e o terceiro é o nome do arquivo
   ]
 }
 ```
+
+OBS: A amazon retorna do S3 um buffer, então tem que trabalhar com buffer para manipular imagens
