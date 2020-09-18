@@ -15,4 +15,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ${{ secrets.AWS_REGION }}
           function_name: video-maker
-          source: __video-maker-lambda/index.js
+          source: __video-maker-lambda/*

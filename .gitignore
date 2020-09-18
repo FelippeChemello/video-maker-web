@@ -34,3 +34,7 @@ yarn-error.log*
 .vercel
 
 .env
+
+__video-maker-lambda/images/*
+__video-maker-lambda/node_modules
+
