@@ -13,9 +13,7 @@ jobs:
         with: 
             cmd: --cwd __video-maker-lambda
       - name: Zipping __video-maker-lambda
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
+        run: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
       - name: Deploy __video-maker-lambda To AWS Lambda
         uses: appleboy/lambda-action@master
         with:
