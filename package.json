@@ -11,6 +11,7 @@
   "dependencies": {
     "algorithmia": "^0.3.10",
     "googleapis": "^59.0.0",
+    "image-downloader": "^4.0.1",
     "next": "9.5.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
