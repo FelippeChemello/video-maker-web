@@ -1,29 +1,29 @@
-name: deploy to lambda
-on: [push]
-jobs:
+# name: deploy to lambda
+# on: [push]
+# jobs:
 
-  deploy_source:
-    name: deploy lambda from source
-    strategy:
-      matrix:
-        node-version: [12.x]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source Code
-        uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1.4.2
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install dependencies
-        run: cd __video-maker-lambda && npm install
-      - name: Zipping __video-maker-lambda
-        run: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
-      - name: Deploy __video-maker-lambda To AWS Lambda
-        uses: appleboy/lambda-action@master
-        with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ secrets.AWS_REGION }}
-          function_name: video-maker
-          zip_file: __video-maker-lambda.zip
+#   deploy_source:
+#     name: deploy lambda from source
+#     strategy:
+#       matrix:
+#         node-version: [12.x]
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Source Code
+#         uses: actions/checkout@v1
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v1.4.2
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#       - name: Install dependencies
+#         run: cd __video-maker-lambda && npm install
+#       - name: Zipping __video-maker-lambda
+#         run: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
+#       - name: Deploy __video-maker-lambda To AWS Lambda
+#         uses: appleboy/lambda-action@master
+#         with:
+#           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws_region: ${{ secrets.AWS_REGION }}
+#           function_name: video-maker
+#           zip_file: __video-maker-lambda.zip
