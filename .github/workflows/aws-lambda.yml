@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install
+        run: cd __video-maker-lambda && npm install
       - name: Zipping __video-maker-lambda
         run: cd __video-maker-lambda && zip -qq -r ../__video-maker-lambda.zip .
       - name: Deploy __video-maker-lambda To AWS Lambda
