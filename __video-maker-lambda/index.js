@@ -41,13 +41,14 @@ exports.handler = async (event, context, callback) => {
             Bucket: srcBucket,
             Key: srcKey,
         };
+        console.log('Buscando imagem no S3');
         origimage = await s3.getObject(params).promise();
+        console.log('Imagem Original: ');
+        console.log(origimage);
     } catch (error) {
         console.log(error);
         return;
     }
-
-    console.log(origimage);
 
     // set thumbnail width. Resize will set the height automatically to maintain aspect ratio.
     const width = 200;
@@ -55,7 +56,10 @@ exports.handler = async (event, context, callback) => {
     // Use the Sharp module to resize the image and save in a buffer.
     let buffer;
     try {
+        console.log('Iniciando Resize');
         buffer = await sharp(origimage.Body).resize(width).toBuffer();
+        console.log('Resize completo');
+        console.log(buffer);
     } catch (error) {
         console.log(error);
         return;
@@ -69,8 +73,10 @@ exports.handler = async (event, context, callback) => {
             Body: buffer,
             ContentType: 'image',
         };
-
+        console.log('Salvando Imagem');
         const putResult = await s3.putObject(destparams).promise();
+        console.log('Imagem salva');
+        console.log(putResult);
     } catch (error) {
         console.log(error);
         return;
