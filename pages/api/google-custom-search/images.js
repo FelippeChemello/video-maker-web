@@ -1,5 +1,4 @@
 const { google } = require('googleapis');
-const syncRequest = require('sync-request');
 
 const customSearch = google.customsearch('v1');
 
@@ -18,18 +17,10 @@ async function fetchGoogleAndReturnImagesLinks(query) {
 
     if (googleResponse.status !== 200) throw new Error('Images not found');
 
-    const base64Images = [];
-    googleResponse.data.items.forEach((imageData, index) => {
-        console.log(`> [Images] Convertendo a imagem ${index} para base64`);
+    const imagesUrl = [];
+    googleResponse.data.items.forEach((imageData) => imagesUrl.push(imageData.link));
 
-        const imageResponse = syncRequest('GET', imageData.link, { encoding: 'binary' });
-        const base64 = Buffer.from(imageResponse.getBody()).toString('base64');
-        base64Images.push(base64);
-
-        console.log(`> [Images] Imagem ${index} convertida com sucesso`);
-    });
-
-    return base64Images;
+    return imagesUrl;
 }
 
 export default async (request, response) => {
@@ -38,11 +29,11 @@ export default async (request, response) => {
 
         console.log(`> [Images] Buscando imagens para o termo "${query}"`);
 
-        const imagesBase64Encoded = await fetchGoogleAndReturnImagesLinks(query);
+        const images = await fetchGoogleAndReturnImagesLinks(query);
 
-        console.log(`> [Images] ${imagesBase64Encoded.length} imagens encontradas`);
+        console.log(`> [Images] ${images.length} imagens encontradas`);
 
-        response.send(imagesBase64Encoded);
+        response.send(images);
     } catch (exception) {
         console.error(exception.message);
 
