@@ -12,6 +12,10 @@ jobs:
         uses: Borales/actions-yarn@v2.3.0
         with: 
             cmd: --cwd __video-maker-lambda
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+            time: '10s'
       - name: Deploy __video-maker-lambda To AWS Lambda
         uses: appleboy/lambda-action@master
         with:
