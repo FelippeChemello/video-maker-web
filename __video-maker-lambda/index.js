@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const AWS = require('aws-sdk');
 const request = require('request');
 const tempy = require('tempy');
 
@@ -10,8 +9,6 @@ ffmpeg.setFfmpegPath(path.resolve(__dirname, 'exodus', 'bin', 'ffmpeg'));
 ffmpeg.setFfprobePath(path.resolve(__dirname, 'exodus', 'bin', 'ffprobe'));
 
 const videoshow = require('videoshow');
-
-const s3 = new AWS.S3();
 
 function downloadImages(url, fileDestination) {
     return new Promise((resolve, revoke) => {

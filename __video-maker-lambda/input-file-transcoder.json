@@ -1,9 +1,0 @@
-{
-    "logKey": "video.log",
-    "videoName": "video.mp4",
-    "s3Bucket": "video-maker-files.codestack.me",
-    "imagesUrl": [
-        "https://fossday.org/wp-content/uploads/2019/09/Logotipo-KingHost-Preferencial-Fundo-Branco-1024x576.png",
-        "https://king.host/dist/kinghostfb.png"
-    ]
-}
