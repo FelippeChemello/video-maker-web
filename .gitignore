@@ -38,6 +38,7 @@ yarn-error.log*
 pages/files/*
 !pages/files/.gitkeep
 
-__video-maker-lambda/images/*
+__video-maker-lambda/config
+__video-maker-lambda/video.mp4
 __video-maker-lambda/node_modules/*
-__video-maker-lambda.zip
+
