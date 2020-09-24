@@ -1,15 +1,18 @@
 const textToSpeech = require('@google-cloud/text-to-speech');
 const tempy = require('tempy');
 const fs = require('fs');
-const path = require('path');
 const { Readable } = require('stream');
 const mp3Duration = require('mp3-duration');
 const { resolve } = require('path');
 const audioConcat = require('audioconcat');
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = path.resolve(__dirname, '..', 'config', 'google-tts.json');
-
-const client = new textToSpeech.TextToSpeechClient();
+const client = new textToSpeech.TextToSpeechClient({
+    credentials: {
+        private_key_id: process.env.GOOGLE_TTS_PRIVATE_KEY_ID,
+        private_key: `${process.env.GOOGLE_TTS_PRIVATE_KEY}`,
+        client_email: process.env.GOOGLE_TTS_CLIENT_EMAIL,
+    },
+});
 
 function bufferToStream(binary) {
     const readableInstanceStream = new Readable({

@@ -2,8 +2,10 @@ require('dotenv').config();
 const path = require('path');
 const tempy = require('tempy');
 const ffmpeg = require('fluent-ffmpeg');
-const videoshow = require('videoshow');
-const fs = require('fs');
+
+ffmpeg.setFfmpegPath(path.resolve(__dirname, 'exodus', 'bin', 'ffmpeg'));
+ffmpeg.setFfprobePath(path.resolve(__dirname, 'exodus', 'bin', 'ffprobe'));
+
 const {
     downloadAllImages,
     createAllSentenceImages,
@@ -16,22 +18,31 @@ const {
     getDurationFromAudios,
     concatAllVoicesAndInsertTimeToIntro,
 } = require('./src/voices');
-const { getFramesData } = require('./src/video');
-
-ffmpeg.setFfmpegPath(path.resolve(__dirname, 'exodus', 'bin', 'ffmpeg'));
-ffmpeg.setFfprobePath(path.resolve(__dirname, 'exodus', 'bin', 'ffprobe'));
+const {
+    getFramesData,
+    renderVideo,
+} = require('./src/video');
+const {
+    youtubeUpload,
+} = require('./src/upload');
 
 exports.handler = async (req, res) => {
-    const { imagesUrl, sentences } = req.body;
+    const {
+        imagesUrl,
+        sentences,
+        youtubeToken,
+        title,
+        description,
+        tags,
+    } = req.body;
 
-    const videoFileName = 'video.mp4';// tempy.file({ extension: 'mp4' });
+    const videoFileName = tempy.file({ extension: 'mp4' });
     const voiceFileName = tempy.file({ extension: 'mp3' });
     const thumbnailFileName = tempy.file({ extension: 'png' });
 
     const { imagesFilesOriginalNames, imagesDownloadPromisses } = await downloadAllImages(imagesUrl);
     const { voicesFilesNames, voicesDownloadPromisses } = await downloadAllTextToSpeech(sentences);
-
-    console.log(voicesDownloadPromisses);
+    await Promise.all(voicesDownloadPromisses);
 
     const voicesDurationPromisses = [];
     let finalAudioPromise;
@@ -42,77 +53,27 @@ exports.handler = async (req, res) => {
 
     let sentecesImagesObject;
     let imagesConvertionObject;
-    // let thumbnailPromise;
+    let thumbnailPromise;
     let finalFramesObject;
     Promise.all(imagesDownloadPromisses).then(async () => {
         sentecesImagesObject = await createAllSentenceImages(sentences);
         imagesConvertionObject = await convertAllImages(imagesFilesOriginalNames);
 
         Promise.all(sentecesImagesObject.subtitleImagesPromises, imagesConvertionObject.imagesConvertionPromises).then(async () => {
-            // thumbnailPromise = await createVideoThumbnail(thumbnailFileName);
+            thumbnailPromise = await createVideoThumbnail(thumbnailFileName, imagesConvertionObject.imagesConvertedFilesNames[0]);
             finalFramesObject = await insertSubtitleInImages(imagesConvertionObject.imagesConvertedFilesNames, sentecesImagesObject.subtitleImagesNames);
 
-            Promise.all([...voicesDurationPromisses, finalAudioPromise, ...finalFramesObject.finalFramesPromises])
+            Promise.all([...voicesDurationPromisses, finalAudioPromise, ...finalFramesObject.finalFramesPromises, thumbnailPromise])
                 .then(async () => {
-                    console.log('1');
-                    const framesData = await getFramesData(finalFramesObject.finalFramesFilesNames, voicesDurationPromisses);
-                    console.log(framesData);
-                    console.log('2');
+                    const framesData = await Promise.all([getFramesData(finalFramesObject.finalFramesFilesNames, voicesDurationPromisses)]);
 
-                    const videoOptions = {
-                        fps: 25,
-                        transition: true,
-                        transitionDuration: 1, // seconds
-                        videoBitrate: 1024,
-                        videoCodec: 'libx264',
-                        size: '1280x720',
-                        audioBitrate: '128k',
-                        audioChannels: 2,
-                        format: 'mp4',
-                        pixelFormat: 'yuv420p',
-                        useSubRipSubtitles: false, // Use ASS/SSA subtitles instead
-                        subtitleStyle: {
-                            Fontname: 'Courier New',
-                            Fontsize: '37',
-                            PrimaryColour: '11861244',
-                            SecondaryColour: '11861244',
-                            TertiaryColour: '11861244',
-                            BackColour: '-2147483640',
-                            Bold: '2',
-                            Italic: '0',
-                            BorderStyle: '2',
-                            Outline: '2',
-                            Shadow: '3',
-                            Alignment: '1', // left, middle, right
-                            MarginL: '40',
-                            MarginR: '60',
-                            MarginV: '40',
-                        },
-                    };
+                    const rederVideoPromise = renderVideo(...framesData, voiceFileName, videoFileName);
 
-                    videoshow(framesData, videoOptions)
-                        .audio(voiceFileName)
-                        .save(videoFileName)
-                        .on('start', (command) => {
-                            console.log(`> [video-robot] ffmpeg process started: ${command}`);
-                        })
-                        .on('progress', (progress) => {
-                            if (typeof progress.targetSize !== 'undefined' && typeof progress.percent !== 'undefined') {
-                                console.log(`> [video-robot] Processing: ${progress.targetSize / 1000}MB`);
-                            }
-                        })
-                        .on('error', (err, stdout, stderr) => {
-                            console.error('> [video-robot] Error:', err);
-                            console.error('> [video-robot] ffmpeg stderr:', stderr);
-                        })
-                        .on('end', (output) => {
-                            console.log('> [video-robot] Video created in:', output);
+                    await rederVideoPromise;
 
-                            console.log(videoFileName);
+                    await youtubeUpload(youtubeToken, videoFileName, title, description, tags, thumbnailFileName);
 
-                            // fs.writeFileSync(path.join(__dirname, 'video.mp4'), fs.createReadStream(videoFileName));
-                            res.send('Video criado');
-                        });
+                    res.send('Video enviado');
                 });
         });
     });

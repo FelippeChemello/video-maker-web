@@ -154,8 +154,12 @@ exports.createVideoThumbnail = async (thumbnailFileName, firstFrameFileName) => 
     console.log(`> [Image] Creating video thumbnail -> ${thumbnailFileName}`);
 
     return new Promise((resolve, reject) => {
+        const width = 1920;
+        const height = 1080;
+
         gm()
             .in(firstFrameFileName)
+            .out('-resize', `${width}x${height}^`)
             .write(thumbnailFileName, (error) => {
                 if (error) {
                     console.log(`> [Image] Video thumbnail creation failed: ${error}`);
