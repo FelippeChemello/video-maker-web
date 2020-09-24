@@ -1,4 +1,5 @@
 require('dotenv').config();
+const fs = require('fs');
 const tempy = require('tempy');
 const ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -74,6 +75,22 @@ exports.handler = async (req, res) => {
 
                     await youtubeUpload(youtubeToken, videoFileName, title, description, tags, thumbnailFileName);
 
+                    [
+                        videoFileName,
+                        voiceFileName,
+                        thumbnailFileName,
+                        ...imagesFilesOriginalNames,
+                        ...voicesFilesNames,
+                        ...finalFramesObject.finalFramesFilesNames,
+                        ...imagesConvertionObject.imagesConvertedFilesNames,
+                        ...sentecesImagesObject.subtitleImagesNames,
+                    ].forEach((file) => fs.unlink(file, (error) => {
+                        if (error) {
+                            console.error(`> [Clean] Error at removing file ${file}: ${error}`);
+                        } else {
+                            console.log(`> [Clean] File ${file} removed successfully`);
+                        }
+                    }));
                     res.send('Video enviado');
                 });
         });

@@ -50,21 +50,21 @@ exports.renderVideo = async (framesData, audioFileName, outputFileName) => {
             .audio(audioFileName)
             .save(outputFileName)
             .on('start', (command) => {
-                console.log(`> [video-robot] ffmpeg process started: ${command}`);
+                console.log(`> [Video] ffmpeg process started: ${command}`);
             })
             .on('progress', (progress) => {
                 if (typeof progress.targetSize !== 'undefined' && typeof progress.percent !== 'undefined') {
-                    console.log(`> [video-robot] Processing: ${progress.targetSize / 1000}MB`);
+                    console.log(`> [Video] Processing: ${progress.targetSize / 1000}MB`);
                 }
             })
             .on('error', (err, stdout, stderr) => {
-                console.error('> [video-robot] Error:', err);
-                console.error('> [video-robot] ffmpeg stderr:', stderr);
+                console.error('> [Video] Error:', err);
+                console.error('> [Video] ffmpeg stderr:', stderr);
 
                 reject();
             })
             .on('end', (output) => {
-                console.log('> [video-robot] Video created in:', output);
+                console.log('> [Video] Video created in:', output);
 
                 resolve();
             });
