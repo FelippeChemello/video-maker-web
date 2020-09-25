@@ -1,65 +1,52 @@
 import Head from 'next/head'
+
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    return (
+        <>
+            <div className={styles.container}>
+                <div className={styles.containerCentral}>
+                    <div className={styles.header} id="header">
+                        <h1 className={styles.logo}>V<span>MAKER</span></h1>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+                        <div id="menu-options" className={styles.headerItems}>
+                            <a className={styles.headerItem}>Preço</a>
+                            <a className={styles.headerItem}>Como funciona?</a>
+                            <a className={styles.headerItem}>Login</a>
+                            <a className={styles.headerButton}>Teste Gratuitamente</a>
+                        </div>
+                    </div>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+                    <div className={styles.body}>
+                        <div className={styles.bodyLeft}>
+                            <img src="/blue-dots.svg" className={styles.blueDots1}/>
+                            <h2 className={styles.title}>
+                                Crie vídeos de maneira <br/> automatizada com IA
+                            </h2>
+                            <img src="/blue-dots.svg" className={styles.blueDots2}/>
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+                            <h3 className={styles.description}>
+                                Através de Inteligência Artificial e Aprendizado de Máquina 
+                                pesquisamos o conteúdo informado, sintetizamos e o entregamos 
+                                em formato de vídeo diretamente em sua conta do YouTube ou 
+                                disponibilizamos para Download, tudo feito em poucos passos e rápidamente.
+                            </h3>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+                            <a className={styles.buttonTryFree}>
+                                Teste Gratuitamente
+                            </a>
+                        </div>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+                        <div className={styles.bodyRight}>
+                            <img src="/add-content.svg" className={styles.addContent} />
+                        </div>
+                    </div>
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+                    <img src="/play-symbol.png" className={styles.playSymbol1} />
+                    <img src="/play-symbol.png" className={styles.playSymbol2} />
+                </div>
+            </div>
+        </>
+    )
 }

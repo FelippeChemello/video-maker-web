@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:server": "next dev",
-    "dev:lambda": "cd __video-maker-lambda && sam local start-api --port 3030",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "algorithmia": "^0.3.10",
+    "axios": "^0.20.0",
+    "bcryptjs": "^2.4.3",
     "googleapis": "^59.0.0",
     "image-downloader": "^4.0.1",
+    "mysql": "^2.18.1",
     "next": "9.5.3",
     "react": "16.13.1",
+    "react-burger-menu": "^2.7.1",
     "react-dom": "16.13.1",
     "request": "^2.88.2",
     "sbd": "^1.0.18",
