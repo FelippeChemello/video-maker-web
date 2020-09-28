@@ -1,0 +1,23 @@
+.headerItems {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 1px solid blue; */
+}
+
+.headerItems a {
+    margin-left: 30px;
+    cursor: pointer;
+}
+
+.headerItem {
+    color: #73738D
+}
+
+.headerButton {
+    padding: 10px 20px;
+    color: #35A0EE;
+    border: 2px solid #35A0EE;
+    box-sizing: border-box;
+    border-radius: 33px;
+}

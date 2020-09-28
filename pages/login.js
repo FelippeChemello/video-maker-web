@@ -3,6 +3,10 @@ import axios from 'axios'
 import { Cookies } from 'react-cookie'
 import { useRouter } from 'next/router'
 
+import Logo from '../components/logo'
+import Menu from '../components/menu'
+import IsAlreadyLoggedRedirectToDashboard from '../components/isAlreadyLoggedRedirectToDashboard'
+
 import styles from '../styles/Auth.module.css'
 
 const cookies = new Cookies();
@@ -26,7 +30,7 @@ export default function Home() {
             password
         }).then(response => {
             if (response.status === 200 && response.data.token) {
-                cookies.set('token', response.data.token)
+                cookies.set('token', response.data.token, {expiresIn: 3000})
                 router.push('/dashboard')
             } else {
                 alert(response.data)
@@ -39,17 +43,13 @@ export default function Home() {
 
     return (
         <>
+            <IsAlreadyLoggedRedirectToDashboard/>
             <div className={styles.container}>
                 <div className={styles.containerCentral}>
                     <div className={styles.header} id="header">
-                        <h1 className={styles.logo}>V<span>MAKER</span></h1>
+                        <Logo />
 
-                        <div id="menu-options" className={styles.headerItems}>
-                            <a className={styles.headerItem}>Preço</a>
-                            <a className={styles.headerItem}>Como funciona?</a>
-                            <a className={styles.headerItem}>Login</a>
-                            <a className={styles.headerButton}>Teste Gratuitamente</a>
-                        </div>
+                        <Menu />
                     </div>
 
                     <div className={styles.body}>

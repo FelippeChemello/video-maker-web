@@ -16,16 +16,6 @@
     padding: 30px 70px
 }
 
-.logo {
-    position: relative;
-    font-size: 48px;
-    margin: 0;
-}
-
-.logo span {
-    opacity: 0.7;
-}
-
 .header {
     display: flex;
     width: 100%;
@@ -33,30 +23,6 @@
     justify-content: space-between;
     margin-bottom: 90px;
     /* border: 1px solid green; */
-}
-
-.headerItems {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    /* border: 1px solid blue; */
-}
-
-.headerItems a {
-    margin-left: 30px;
-    cursor: pointer;
-}
-
-.headerItem {
-    color: #73738D
-}
-
-.headerButton {
-    padding: 10px 20px;
-    color: #35A0EE;
-    border: 2px solid #35A0EE;
-    box-sizing: border-box;
-    border-radius: 33px;
 }
 
 .body {

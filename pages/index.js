@@ -1,5 +1,8 @@
 import Head from 'next/head'
 
+import Logo from '../components/logo'
+import Menu from '../components/menu'
+
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -8,14 +11,9 @@ export default function Home() {
             <div className={styles.container}>
                 <div className={styles.containerCentral}>
                     <div className={styles.header} id="header">
-                        <h1 className={styles.logo}>V<span>MAKER</span></h1>
+                        <Logo/>
 
-                        <div id="menu-options" className={styles.headerItems}>
-                            <a className={styles.headerItem}>Preço</a>
-                            <a className={styles.headerItem}>Como funciona?</a>
-                            <a className={styles.headerItem}>Login</a>
-                            <a className={styles.headerButton}>Teste Gratuitamente</a>
-                        </div>
+                        <Menu />
                     </div>
 
                     <div className={styles.body}>
