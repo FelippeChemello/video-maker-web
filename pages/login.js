@@ -1,10 +1,16 @@
 import React, {useState} from 'react'
 import axios from 'axios'
+import { Cookies } from 'react-cookie'
+import { useRouter } from 'next/router'
+
 import styles from '../styles/Auth.module.css'
+
+const cookies = new Cookies();
 
 export default function Home() {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const router = useRouter();
 
     function handleEmailChange(event) {
         setEmail(event.target.value)
@@ -19,7 +25,15 @@ export default function Home() {
             email,
             password
         }).then(response => {
-            alert(response.data)
+            if (response.status === 200 && response.data.token) {
+                cookies.set('token', response.data.token)
+                router.push('/dashboard')
+            } else {
+                alert(response.data)
+            }
+        }).catch((error) => {
+            console.log(error)
+            alert("E-mail ou senha incorretos")
         })
     }
 
