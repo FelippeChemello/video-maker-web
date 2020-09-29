@@ -33,7 +33,9 @@ export default async (request, response) => {
 
         console.log(`> [Images] ${images.length} imagens encontradas`);
 
-        response.send(images);
+        console.log(images);
+
+        response.status(200).send(images);
     } catch (exception) {
         console.error(exception.message);
 

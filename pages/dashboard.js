@@ -16,15 +16,17 @@ export default function Home() {
     const router = useRouter();
 
     useEffect(() => {
-        axios.get('/api/video', {
-                headers: {
-                    'Authorization': `token ${cookies.get('token')}`
-                }
-            })
+        axios.get('/api/video')
             .then((response) => {
                 setVideos(response.data)
+                console.log(videos)
             })
-            .catch()
+            .catch((error) => {
+                if (error.response.status === 302) {
+                    cookies.set('token', '')
+                    router.push(error.response.data)
+                }
+            })
     }, [])
     
 
@@ -39,11 +41,13 @@ export default function Home() {
                     </div>
 
                     <div className={styles.body}>
-                        <div className={styles.createNewVideo}>
-                            Criar <br/> Vídeo
-                        </div>
+                        <a href="/create" style={{cursor: 'pointer'}}>
+                            <div className={styles.createNewVideo}>
+                                Criar <br/> Vídeo
+                            </div>
+                        </a>
 
-                        {
+                        {   
                             videos.map(video => {
                                 return (
                                     <div key={video.id} className={styles.createNewVideo}> 

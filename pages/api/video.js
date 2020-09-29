@@ -2,7 +2,7 @@ import mysql from '../../config/database';
 import authMiddleware from '../../config/auth-middleware';
 
 export default async (request, response) => {
-    const userId = await authMiddleware(request, response);
+    const userId = await authMiddleware(request, response).catch();
 
     mysql.query(`SELECT v.* FROM Videos AS v JOIN RelUsersVideos AS ruv WHERE ruv.IdUser = ${userId}`, async (error, videos) => {
         if (error) {

@@ -6,46 +6,59 @@ import styles from '../styles/Menu.module.css'
 
 const cookies = new Cookies();
 
-export default function() {
+export default function Menu() {
     const [logged, setLogged] = useState(false);
     const [credits, setCredits] = useState(0);
 
     useEffect(() => {
         if (cookies.get('token')) {
-            axios.get('/api/credits/getQuantityAvailable', {
+            axios.get('/api/auth/isValidToken', {
                     headers: {
                         'Authorization': `token ${cookies.get('token')}`
                     }
                 })
                 .then((response) => {
-                    setCredits(response.data)
+                    console.log("logado")
+
+                    axios.get('/api/credits/getQuantityAvailable', {
+                            headers: {
+                                'Authorization': `token ${cookies.get('token')}`
+                            }
+                        })
+                        .then((response) => {
+                            setCredits(response.data)
+                        })
+                        .catch()
+
+                    setLogged(true)
                 })
-                .catch()
-            
-            setLogged(true);
+                .catch(() => {
+                    cookies.set('token', '')
+                    setLogged(false)
+                })
         }
     }, [])
 
     return (
         <div id="menu-options" className={styles.headerItems}>
+            <a className={styles.headerItem}>Como funciona?</a>
             {
                 (logged) 
                 ? 
-                    (
-                        <>
-                            <a className={styles.headerItem}>Preço</a>
-                            <a className={styles.headerItem}>Como funciona?</a>
-                            <a className={styles.headerItem}>Login</a>
-                            <a className={styles.headerButton}>Teste Gratuitamente</a>
-                        </>
-                    ) 
-                : 
                     (
                         <>
                             <a className={styles.headerItem}>Créditos: {credits}</a>
                             <a className={styles.headerButton}>Comprar créditos</a>
                         </>
                     )
+                :
+                    (
+                        <>
+                            <a className={styles.headerItem}>Preço</a>
+                            <a className={styles.headerItem}>Login</a>
+                            <a className={styles.headerButton}>Teste Gratuitamente</a>
+                        </>
+                    ) 
             }
         </div>
     )

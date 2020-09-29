@@ -1,9 +1,13 @@
+import authMiddleware from '../../../config/auth-middleware';
+
 const algorithmia = require('algorithmia');
 
 const algorithmiaAuthenticated = algorithmia(process.env.ALGORITHMIA_API_KEY);
 const wikipediaAlgorithm = algorithmiaAuthenticated.algo('web/WikipediaParser/0.1.2');
 
 export default async (request, response) => {
+    await authMiddleware(request, response).catch();
+
     try {
         const { search } = request.body;
 

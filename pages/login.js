@@ -30,7 +30,8 @@ export default function Home() {
             password
         }).then(response => {
             if (response.status === 200 && response.data.token) {
-                cookies.set('token', response.data.token, {expiresIn: 3000})
+                cookies.set('token', response.data.token)
+                console.log(document.cookie)
                 router.push('/dashboard')
             } else {
                 alert(response.data)

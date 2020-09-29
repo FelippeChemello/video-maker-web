@@ -1,24 +1,31 @@
 import { verify } from 'jsonwebtoken';
 
+function cookiesToJson(cookieStr) {
+    const output = {};
+    cookieStr.split(/\s*;\s*/).forEach((pair) => {
+        pair = pair.split(/\s*=\s*/);
+        output[pair[0]] = pair.splice(1).join('=');
+    });
+
+    return output;
+}
+
 export default function (req, res) {
     return new Promise(((resolve, reject) => {
-        const authHeader = req.headers.authorization;
-
         try {
-            if (!authHeader) {
-                throw new Error('JWT is missing');
-            }
+            const jsonCookie = cookiesToJson(req.headers.cookie);
 
-            const [, token] = authHeader.split(' ');
+            console.log(`> [AuthMiddleware] Token ${jsonCookie.token}`);
 
-            const decoded = verify(token, process.env.JWT_SECRET);
+            const decoded = verify(jsonCookie.token, process.env.JWT_SECRET);
 
             const { sub } = decoded;
 
+            console.log(`> [AuthMiddleware] Client ${sub}`);
+
             resolve(sub);
         } catch (err) {
-            // Catch the JWT Expired or Invalid errors
-            return res.redirect('/login');
+            return res.status(302).send('/login');
         }
     }));
 }

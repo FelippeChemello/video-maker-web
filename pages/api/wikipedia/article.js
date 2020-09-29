@@ -1,3 +1,5 @@
+import authMiddleware from '../../../config/auth-middleware';
+
 const algorithmia = require('algorithmia');
 const sentenceBoundaryDetection = require('sbd');
 
@@ -53,6 +55,8 @@ function breakContentIntoSentences(content) {
 }
 
 export default async (request, response) => {
+    await authMiddleware(request, response);
+
     try {
         const { articleName, lang } = request.body;
 

@@ -2,17 +2,19 @@ import Head from 'next/head'
 
 import Logo from '../components/logo'
 import Menu from '../components/menu'
+import IsAlreadyLoggedRedirectToDashboard from '../components/isAlreadyLoggedRedirectToDashboard'
 
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
     return (
         <>
+            <IsAlreadyLoggedRedirectToDashboard/>
             <div className={styles.container}>
                 <div className={styles.containerCentral}>
                     <div className={styles.header} id="header">
                         <Logo/>
-
+                        
                         <Menu />
                     </div>
 

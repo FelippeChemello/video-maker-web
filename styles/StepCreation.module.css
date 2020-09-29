@@ -1,0 +1,44 @@
+.stepItemActive,
+.stepItem {
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.5);
+    height: 45px;
+}
+
+.stepItemActive {
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.stepIndicatorActive,
+.stepIndicator {
+    height: 30px;
+    width: 30px;
+    border-radius: 3px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    margin-right: 15px;
+    padding: 5px;
+    background-clip: content-box;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.stepIndicatorActive {
+    border: 3px solid #FFFFFF;
+    background-color: #FFFFFF;
+}
+
+.stepDividerActive,
+.stepDivider {
+    height: 10px;
+    width: 4px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 3px;
+    margin: 5px 0 5px 13px;
+}
+
+.stepDividerActive {
+    background-color: #FFFFFF;
+}
