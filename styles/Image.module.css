@@ -1,0 +1,28 @@
+.imgFrame {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: auto !important;
+}
+
+.imgFrame span {
+    white-space:nowrap;
+    margin-right: 20px;
+}
+
+.img {
+    width: 320px;
+    height: 240px;
+    margin-bottom: 20px;
+    border: 2px solid #D5D9DC;
+    margin-right: 20px;;
+}
+
+.imgSelected {
+    width: 320px;
+    height: 240px;
+    margin-bottom: 20px;
+    border: 2px solid #35A0EE;
+    margin-right: 20px;
+    ;
+}

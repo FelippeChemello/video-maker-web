@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Cookies } from 'react-cookie'
 import { useRouter } from 'next/router'
+// import { Carousel } from 'react-responsive-carousel';
+// import { GoogleLogin } from 'react-google-login'
 
 import Logo from '../components/logo'
 import StepCreation from '../components/stepCreation'
+import ImageSelector from '../components/imageSelector'
 
 import styles from '../styles/Create.module.css'
 
@@ -22,9 +25,10 @@ export default function Home() {
     
     function handleInput (key, value) {
         content[key] = value
-        setContent({...content})
 
         console.log(content)
+
+        setContent({...content})
     }
 
     function handleNext() {
@@ -46,6 +50,20 @@ export default function Home() {
                     }
                     setStep(3);
                     getKeywordsAndImages()
+                    break;
+                case 3:
+                    if (content.selectedSentences.length != content.imagesSelected.length) {
+                        throw new Error("Selecione uma imagem para cada frase");
+                    }
+                    setStep(4);
+                    getInfoVideo();
+                    break;
+                case 4: 
+                    if (content.videoTitle == "" || content.videoDescription == "" || content.videoTags == "") {
+                        throw new Error("Preencha todos os campos!");
+                    }
+                    endsVideoCreation();
+                    break;
                 default: 
                     throw new Error("Ocorreu um erro desconhecido, por favor, tente novamente mais tarde.")
 
@@ -55,12 +73,62 @@ export default function Home() {
         }
     }
 
+    console.log(content)
+
+    function endsVideoCreation() {
+
+        const images = []
+        content.imagesUrl.forEach((imgs, index) => {
+            images.push(imgs[content.imagesSelected[index]])
+        })
+
+        const sentences = []
+        content.selectedSentences.forEach(sentence => sentences.push(sentence.text))
+
+        axios.post('/api/auth/checkClientHasAuthorizedOAuth')
+        .then((response) => {
+            console.log(response)
+            if (response.data.redirect) {
+                window.open(response.data.redirect, "_blank")
+            } else {
+                axios.post('/api/video/create', {
+                    title: content.videoTitle,
+                    description: content.videoDescription,
+                    tags: content.videoTags,
+                    imagesUrl: images,
+                    sentences
+                }).then((response) => {
+                    console.log(response)
+                    
+                }).catch((error) => {
+                    setLoading(false)
+                    if (error.response.status === 302) {
+                        cookies.set('token', '')
+                        router.push(error.response.data)
+                    } else {
+                        alert("Não conseguimos finalizar a criação de seu vídeo, tente novamente mais tarde! ")
+                        console.log(error.response)
+                    }
+                })
+            }
+        }).catch((error) => {
+            setLoading(false)
+            if (error.response.status === 302) {
+                cookies.set('token', '')
+                router.push(error.response.data)
+            } else {
+                alert("Não conseguimos finalizar a criação de seu vídeo, tente novamente mais tarde! ")
+                console.log(error.response)
+            }
+        })
+    }
+
     function validateStepOneIsDone() {
         if (!content.suggestions) {
             throw new Error("Insira o assunto desejado e clique na lupa para pesquisar sobre o assunto")
         }
         
-        if (content.title === "Selecione..." || content.title === "") {
+        if (content.title === "Selecione..." || content.title === "" || content.title == undefined) {
             throw new Error("Selecione a sugestão que melhor se adapta ao seu assunto");
         }
 
@@ -93,8 +161,8 @@ export default function Home() {
             alert("Aguarde")
         }
 
-        setLoading(true)
-    
+        setLoading(true) 
+
         axios.post(
             '/api/wikipedia/suggestions', 
             { search: content.subject }
@@ -123,6 +191,11 @@ export default function Home() {
         }
 
         setLoading(true)
+
+        //Se não mudou o assunto, não pesquisa dnv
+        if (content.article?.title && content.article.title == content.subject) {
+            return;
+        }
 
         axios.post(
             '/api/wikipedia/article', {
@@ -165,6 +238,8 @@ export default function Home() {
     }
 
     function getKeywordsAndImages() {
+        handleInput('imagesUrl', []);
+
         content.selectedSentences.forEach((sentence, index) => {
             axios.post(
                 '/api/watson/keywords', {
@@ -202,6 +277,20 @@ export default function Home() {
                 }
             })
         })
+    }
+
+    function getInfoVideo() {
+        handleInput('videoTitle', content.article.title);
+
+        let description = '';
+        let tags = '';
+        content.selectedSentences.forEach(sentence => { 
+             description += `${sentence.text} \n\n`
+             tags += `${sentence.keywords[0]},`
+        })
+
+        handleInput('videoDescription', description);
+        handleInput('videoTags', tags);
     }
 
     return (
@@ -294,16 +383,13 @@ export default function Home() {
                             Observação: As imagens finais serão redimensionadas e ajustadas para ajustarem-se ao vídeo.
                         </h2>
 
-                        <div className={styles.sentences}>
+                        <div className={styles.images}>
                             {   content.imagesUrl ? (
-                                    content.imagesUrl.map((url, index) => {
+                                    content.imagesUrl.map((urls, index) => {
                                         return (
-                                            <img src={url[0]}
-                                                // className={styles[`sentence${sentence.selected ? 'Selected' : ''}`]} 
-                                                // key={`sentence-${index}`} 
-                                                // value={`sentence-${index}`}
-                                                // onClick={() => handleSentenceSelect(index)}
-                                            />
+                                            <div className={styles.imagesRow}>
+                                                <ImageSelector urls={urls} content={content} handleInput={handleInput} index={index}/>
+                                            </div>
                                         )
                                     })
                                 ) : (
@@ -312,10 +398,28 @@ export default function Home() {
                             }
                         </div>
                     </div>
+
+                    <div id="step4" style={{display: (4 == step ? 'block' : 'none')}}>
+                        <h1>Revisão</h1>
+                        <h2>
+                            Revise os dados de seu vídeo e deixe o restante conosco. <br/>
+                            No momento o upload é feito apenas para o YouTube, ao finalizar a revisão será solicitado para você permitir o upload em sua conta do YouTube.
+                        </h2>
+
+                        <label for="titulo">Título:</label>
+                        <input id="titulo" type="text" name="titulo" value={content.videoTitle} onChange={(event) => {handleInput('videoTitle', event.target.value)}}/>
+
+                        <label for="descricao">Descrição:</label>
+                        <textarea id="descricao" type="text" name="descricao" value={content.videoDescription} onChange={(event) => {handleInput('videoDescription', event.target.value)}}/>
+                        
+
+                        <label for="tags">Tags: <span>(Insira separado por vírgulas)</span></label>
+                        <input id="tags" type="text" name="tags" value={content.videoTags} onChange={(event) => {handleInput('videoTags', event.target.value)}}/>
+                    </div>
                 </div>
                 <div className={styles.controls}>
                     <button className={styles.back} onClick={handleBack}>Voltar</button>
-                    <button className={styles.next} onClick={handleNext}>Próximo passo</button>
+                    <button className={styles.next} onClick={handleNext}>{step == 4 ? "Finalizar" : "Próximo passo"}</button>
                 </div>
             </div>
         </>

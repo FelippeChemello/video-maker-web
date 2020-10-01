@@ -4,7 +4,7 @@
     display: grid;
     
     grid-template-columns: max(370px, 30%) auto;
-    grid-template-rows: 90px auto;
+    grid-template-rows: 90px auto 140px;
     grid-template-areas: "headerLogo  headerStep"
                          "sidebar  content"
                          "sidebar controls";
@@ -105,14 +105,14 @@
 .content {
     grid-area: content;
     display: flex;
-    padding: 70px 70px;
+    padding: 10px 70px;
     max-width: 1000px;
 }
 
 .content div {
     width: 100%;
-    height: calc(100vh - 450px);
-    overflow-y: auto;
+    height: calc(100vh - 140px - 90px - 200px);
+    /* overflow-y: auto; */
 }
 
 .content h1 {
@@ -139,6 +139,14 @@
     letter-spacing: 0.02em;
     color: #A4AEB4;
     display: block
+}
+
+.content label span{
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    color: #A4AEB4;
 }
 
 .content input,
@@ -172,6 +180,22 @@
     ;
 }
 
+.content textarea,
+.content textarea:focus {
+    height: 180px !important;
+    resize: none;
+    width: 100%;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 2px solid #D5D9DC;
+    color: #0B1D2E;
+    font-size: 21px;
+    outline: none;
+    margin-bottom: 30px;
+    background: #FFFFFF;
+}
+
 .search {
     width: 30px;
     height: 30px;
@@ -184,6 +208,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+    height: auto !important;
 }
 
 .typeOfCreation .methodOfCreation,
@@ -205,6 +230,7 @@
 .sentences {
     display: flex;
     flex-direction: column;
+    overflow-x: auto;
 }
 
 .sentence {
@@ -229,6 +255,17 @@
     border-radius: 5px;
     margin: 10px 0;
     padding: 10px;
+}
+
+.images {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.imagesRow {
+    display: block;
 }
 
 @media (min-width: 1600px) {
