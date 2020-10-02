@@ -59,7 +59,7 @@ exports.youtubeUpload = async (accessToken, videoFile, title, description, tags,
                     tags,
                 },
                 status: {
-                    privacyStatus: 'private',
+                    privacyStatus: 'unlisted',
                 },
             },
             media: {

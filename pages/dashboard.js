@@ -15,6 +15,8 @@ export default function Home() {
     const [videos, setVideos] = useState([])
     const router = useRouter();
 
+    console.warn(process.env.NODE_ENV)
+
     useEffect(() => {
         axios.get('/api/video')
             .then((response) => {

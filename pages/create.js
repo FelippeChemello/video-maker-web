@@ -37,6 +37,8 @@ export default function Home() {
                 case 1:
                     validateStepOneIsDone();
                     if (typeOfCreation == 'ia') {
+                        alert("Desculpe, criação por IA não disponivel ainda.") 
+                        return;
                         setStep(4)
                     } else {
                         setStep(2)
@@ -76,7 +78,12 @@ export default function Home() {
     console.log(content)
 
     function endsVideoCreation() {
+        if (loading) {
+            alert("Aguarde")
+            return;
+        }
 
+        setLoading(true)
         const images = []
         content.imagesUrl.forEach((imgs, index) => {
             images.push(imgs[content.imagesSelected[index]])
@@ -98,7 +105,8 @@ export default function Home() {
                     imagesUrl: images,
                     sentences
                 }).then((response) => {
-                    console.log(response)
+                    alert("Iniciamos a criação de seu vídeo, em breve estará disponível em seu dashbord!")
+                    router.push("/dashboard")
                     
                 }).catch((error) => {
                     setLoading(false)

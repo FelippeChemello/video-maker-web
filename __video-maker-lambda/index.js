@@ -29,7 +29,9 @@ const {
 } = require('./src/upload');
 
 exports.handler = async (req, res) => {
+    console.time();
     const {
+        auth,
         imagesUrl,
         sentences,
         youtubeToken,
@@ -37,6 +39,16 @@ exports.handler = async (req, res) => {
         description,
         tags,
     } = req.body;
+
+    if (auth !== process.env.AUTH_FUNCTION) {
+        console.log('Acesso não autorizado');
+        console.timeEnd();
+        res.status(403).send('Usuário não autenticado');
+        return;
+    }
+
+    console.log('Resposta enviada!');
+    res.send('Iniciando');
 
     const videoFileName = tempy.file({ extension: 'mp4' });
     const voiceFileName = tempy.file({ extension: 'mp3' });
@@ -91,7 +103,7 @@ exports.handler = async (req, res) => {
                             console.log(`> [Clean] File ${file} removed successfully`);
                         }
                     }));
-                    res.send('Video enviado');
+                    console.timeEnd();
                 });
         });
     });
