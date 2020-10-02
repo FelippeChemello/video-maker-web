@@ -1,7 +1,6 @@
-import mysql from './database';
-
 const fs = require('fs');
 const { google } = require('googleapis');
+const mysql = require('./database');
 
 const youtube = google.youtube({ version: 'v3' });
 const { OAuth2 } = google.auth;
