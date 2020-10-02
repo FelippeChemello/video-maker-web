@@ -20,13 +20,13 @@ export default async (request, response) => {
         }
 
         if (!results[0]) {
-            return response.status(401).send('E-mail ou senha incorretos');
+            return response.status(401).send('E-mail ou senha incorretos!');
         }
 
         const passwordCheck = await compare(password, results[0].Password);
 
         if (!passwordCheck) {
-            return response.status(401).send('E-mail ou senha incorretos');
+            return response.status(401).send('E-mail ou senha incorretos!!');
         }
 
         const token = sign({}, process.env.JWT_SECRET, {
