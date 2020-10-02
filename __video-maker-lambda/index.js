@@ -38,6 +38,7 @@ exports.handler = async (req, res) => {
         title,
         description,
         tags,
+        idVideo,
     } = req.body;
 
     if (auth !== process.env.AUTH_FUNCTION) {
@@ -85,7 +86,7 @@ exports.handler = async (req, res) => {
 
                     await rederVideoPromise;
 
-                    await youtubeUpload(youtubeToken, videoFileName, title, description, tags, thumbnailFileName);
+                    await youtubeUpload(youtubeToken, videoFileName, title, description, tags, thumbnailFileName, idVideo);
 
                     [
                         videoFileName,

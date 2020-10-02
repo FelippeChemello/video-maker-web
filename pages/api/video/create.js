@@ -25,7 +25,7 @@ export default async function (request, response) {
             return response.status(500).send({});
         }
 
-        mysql.query(`INSERT INTO RelUsersVideos (IdUser, IdVideo) VALUES (${userId}, ${queryResponse.insertId})`, async (error, queryResponse) => {
+        mysql.query(`INSERT INTO RelUsersVideos (IdUser, IdVideo) VALUES (${userId}, ${queryResponse.insertId})`, async (error, queryResponse2) => {
             if (error) {
                 console.log(error);
                 return response.status(500).send({});
@@ -63,6 +63,7 @@ export default async function (request, response) {
                         tags,
                         imagesUrl,
                         sentences,
+                        idVideo: queryResponse.insertId,
                     }).then((r) => response.status(200).send({ ok: 'ok' }));
                 }).catch((err) => {
                     console.log(err);

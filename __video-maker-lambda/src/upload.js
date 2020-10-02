@@ -1,3 +1,5 @@
+import mysql from './database';
+
 const fs = require('fs');
 const { google } = require('googleapis');
 
@@ -46,7 +48,7 @@ async function uploadYoutubeThumbnail(videoId, thumbnailFileName) {
     });
 }
 
-exports.youtubeUpload = async (accessToken, videoFile, title, description, tags, thumbnailFile) => {
+exports.youtubeUpload = async (accessToken, videoFile, title, description, tags, thumbnailFile, idVideo) => {
     try {
         await authorizeYoutube(accessToken);
 
@@ -71,6 +73,8 @@ exports.youtubeUpload = async (accessToken, videoFile, title, description, tags,
         const youtubeResponse = await youtube.videos.insert(requestParameters);
 
         console.log(`> [Upload] Video available at: https://youtu.be/${youtubeResponse.data.id}`);
+
+        mysql.query(`UPDATE Videos SET FinalUrl = 'https://youtu.be/${youtubeResponse.data.id}' WHERE Id = ${idVideo}`);
 
         await uploadYoutubeThumbnail(youtubeResponse.data.id, thumbnailFile);
 
