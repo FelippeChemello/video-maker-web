@@ -38,7 +38,7 @@ export default async (request, response) => {
 
                     mysql.commit((err) => {
                         if (!err) {
-                            mysql.close();
+                            // mysql.close();
                             return response.status(200).send('Cadastro realizado com sucesso');
                         }
 
